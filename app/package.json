@@ -2,6 +2,9 @@
   "name": "node-webkit menu demo",
   "main": "index.html",
   "chromium-args": "--disable-setuid-sandbox",
+  "webkit": {
+    "plugin": true
+  },
   "window": {
     "show": false,
     "position": "center",

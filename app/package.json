@@ -1,10 +1,13 @@
 {
   "name": "node-webkit menu demo",
   "main": "index.html",
+  "chromium-args": "--disable-setuid-sandbox",
   "window": {
     "show": false,
     "position": "center",
-    "width": 500,
+    "toolbar": false,
+    "frame": true,
+    "width": 800,
     "height": 500
   }
 }

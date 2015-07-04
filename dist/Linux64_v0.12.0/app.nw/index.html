@@ -2,43 +2,286 @@
 <html>
 <head>
 <title>Coding-Trainer IDE</title>
-<style>
-* {
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  height: 100%;
-}
-
-#left, #area-3 {
-  float: left;
-  height: 100%;
-  width: 50%;
-}
-
-#area-1 {
-  height: 50%;
-  background-color: #CC3333;
-}
-
-#area-2 {
-  height: 50%;
-  background-color: #FF9933;
-}
-
-#area-3 {
-  background-color: #0099FF;
-}
-</style>
+<link href="http://fonts.googleapis.com/css?family=Hammersmith+One" rel="stylesheet" type="text/css">
+<!--bower:css-->
+<link href="./components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+<link href="./components/metisMenu/dist/metisMenu.css" rel="stylesheet">
+<link href="./components/angular-toggle-switch/angular-toggle-switch.css"
+rel="stylesheet">
+<link href="./components/nprogress/nprogress.css" rel="stylesheet">
+<!--endbower-->
+<link href="./components/fontawesome/css/font-awesome.css" rel="stylesheet">
+<link href="./components/jquery-ui-layout-bower/source/stable/layout-default.css" rel=
+"stylesheet">
+<link href="./components/jquery.terminal/css/jquery.terminal.css" rel=
+"stylesheet">
+<link href="./components/fancytree/dist/skin-win8/ui.fancytree.css" rel=
+"stylesheet">
+<link href="./css/style.css" rel="stylesheet">
 </head>
-<body>
-  <div id="left">
-    <div id="area-1"></div>
-    <div id="area-2"></div>
-  </div>
-  <div id="area-3"></div>
-  <script src="script.js"></script>
+<body class="ui-layout-container">
+    <div class="ui-layout-north">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button class="navbar-toggle collapsed" data-target=
+                    "#bs-example-navbar-collapse-1" data-toggle="collapse"
+                    type="button"><span class="sr-only">Toggle
+                    navigation</span><span class="icon-bar"></span><span class=
+                    "icon-bar"></span><span class=
+                    "icon-bar"></span></button><a class=
+                    "navbar-brand hammerfont" href="./"><i class=
+                    "fa fa-cloud fa-3" style=
+                    "padding:0 3px;"></i>Any·and·go</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id=
+                "bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="./">Home</a>
+                        </li><!-- public:page:menu:start-->
+
+                        <li>
+                            <a href="./contact">Contact</a>
+                        </li>
+
+                        <li>
+                            <a href="./admin">Admin</a>
+                        </li>
+
+                        <li>
+                            <a href="./platform">platform</a>
+                        </li><!-- public:page:menu:end-->
+
+                        <li>
+                            <div class="btn-toolbar" style="padding-top:7px">
+                                <div class="btn-group">
+                                    <a class=
+                                    "btn btn-default ide-toggle-video fa fa-video-camera"
+                                    href="#" style=
+                                    "font-style: italic"></a><a class=
+                                    "btn btn-default ide-play-video fa fa-play"
+                                    href="#" style=
+                                    "font-style: italic"></a><a class=
+                                    "btn btn-default ide-pause-video fa fa-pause"
+                                    href="#" style=
+                                    "font-style: italic"></a><a class=
+                                    "btn btn-default ide-toggle-editor fa fa-edit"
+                                    href="#" style=
+                                    "font-style: italic"></a><a class=
+                                    "btn btn-default ide-toggle-terminal fa fa-terminal"
+                                    href="#" style=
+                                    "font-style: italic"></a><a class=
+                                    "btn btn-default ide-toggle-treeview fa fa-folder-open-o"
+                                    href="#" style="font-style: italic"></a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle fa fa-flag" data-toggle=
+                            "dropdown" href="#" style=
+                            "font-style: italic; padding-right: 10px"></a>
+
+                            <ul class=
+                            "dropdown-menu dropdown-menu-bubble-right mond-lang-change">
+                            <!--public:translation:menu:start-->
+
+                                <li>
+                                    <a href="#">en-us</a>
+                                </li>
+
+                                <li>
+                                    <a href="#">es-ar</a>
+                                </li><!--public:translation:menu:end-->
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"
+                            href="#"><span><i class="fa fa-users" style=
+                            "padding-right:10px"></i>Login
+                            with...</span><span class="caret"></span></a>
+
+                            <ul class=
+                            "dropdown-menu dropdown-menu-bubble-right">
+                                <li>
+                                    <a href="#"><i class="fa fa-github-alt"
+                                    style="padding-right:10px"></i>Github</a>
+                                </li>
+
+                                <li>
+                                    <a href="#"><i class="fa fa-google-plus"
+                                    style="padding-right:10px"></i>Google</a>
+                                </li>
+
+                                <li>
+                                    <a href="#"><i class=
+                                    "fa fa-linkedin-square" style=
+                                    "padding-right:10px"></i>Linkedin</a>
+                                </li>
+
+                                <li>
+                                    <a href="#"><i class=
+                                    "fa fa-facebook-square" style=
+                                    "padding-right:10px"></i>Facebook</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="ui-layout-east">
+        <div class="ui-layout-container" id="sub-panel" style="">
+            <div class="ui-layout-west" style=
+            "overflow:hidden;background:#232323;width:260px">
+                <div class="treeview-con" style=
+                "overflow-x:hidden;background:#232323;color:#fff;border:0;">
+                </div>
+            </div>
+
+            <div class="ui-layout-center editor-con">
+                <div class="tabs">
+                    <div class="tab active">
+                        <div class="tab-box">
+                            <a class="tab-title" href="#" id=
+                            "active-file"><i class=
+                            "fa fa-circle"></i><span>file.js</span></a>
+                        </div>
+                    </div>
+                </div>
+                <pre id="editor">
+var holaMundo = function() {
+       return "Hola Mundo";
+}
+holaMundo();
+</pre>
+            </div>
+
+            <div class="ui-layout-south ide-term-container">
+                <div id="console"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui-layout-south console">
+        <p>South</p>
+    </div>
+
+    <div class="ui-layout-center browser-bg">
+        <div class="browser">
+            <div class="browser-nav-bar">
+                <div>
+                    <div class="btn-group">
+                        <a class=
+                        "btn btn-default browser-prev-btn fa fa-arrow-left"
+                        href="#" style="font-style: italic"></a><a class=
+                        "btn btn-default browser-next-btn fa fa-arrow-right"
+                        href="#" style="font-style: italic"></a><a class=
+                        "btn btn-default browser-refresh-btn fa fa-refresh"
+                        href="#" style="font-style: italic"></a>
+
+                        <div class="input-group">
+                            <input class="browser-url form-control" name=
+                            "browser-url" type="text" value=
+                            "http://cortezcristian.com/curso-node-js/material/slides/episodio1.html"><a class="browser-go-btn input-group-addon fa fa-chevron-circle-right"
+                            style="font-style: italic"></a>
+                        </div>
+                    </div>
+                </div>
+            </div><iframe align="center" class="browser-page-container"
+            frameborder="0" height="100%" id="navone" name="navone" scrolling=
+            "yes" src=
+            "http://cortezcristian.com/curso-node-js/material/slides/episodio1.html"
+            width="100%"></iframe>
+        </div>
+    </div><!-- Video Player-->
+
+    <div class="ui-layout-west" style="overflow:hidden;">
+        <div id="player"></div>
+
+        <div class="container-fluid" style=
+        "overflow-y: scroll;overflow-x: hidden;">
+            <div class="row">
+                <div class="list-group">
+                    <a class="list-group-item" href="http://www.mongodb.org/">
+                    <h4 class="list-group-item-heading"><span style=
+                    "padding-top:4px">MongoDB</span></h4>
+
+                    <p class="list-group-item-text">a noSQL document datastore
+                    which uses JSON-style documents to represent
+                    data</p></a><a class="list-group-item" href=
+                    "http://expressjs.com/">
+                    <h4 class="list-group-item-heading"><span style=
+                    "padding-top:4px">Express</span></h4>
+
+                    <p class="list-group-item-text">a HTTP server framework on
+                    top of Node</p></a><a class="list-group-item" href=
+                    "https://angularjs.org/">
+                    <h4 class="list-group-item-heading"><span style=
+                    "padding-top:4px">Angular</span></h4>
+
+                    <p class="list-group-item-text">the JS framework offering
+                    declarative, two-way databinding for
+                    webapps</p></a><a class="list-group-item" href=
+                    "http://nodejs.org/">
+                    <h4 class="list-group-item-heading"><span style=
+                    "padding-top:4px">NodeJS</span></h4>
+
+                    <p class="list-group-item-text">the platform built on V8’s
+                    runtime for easily building fast, scalable network
+                    applications.</p></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./components/ace-builds/src-min-noconflict/ace.js"></script>
+    <!--bower:js-->
+    <script src="./components/jquery/dist/jquery.js"></script>
+    <script src="./components/angular/angular.js"></script>
+    <script src="./components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="./components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./components/metisMenu/dist/metisMenu.js"></script>
+    <script src="./components/lodash/dist/lodash.compat.js"></script>
+    <script src="./components/restangular/dist/restangular.js"></script>
+    <script src="./components/angular-resource/angular-resource.js"></script>
+    <script src="./components/angular-cookies/angular-cookies.js"></script>
+    <script src="./components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="./components/angular-animate/angular-animate.js"></script>
+    <script src="./components/angular-touch/angular-touch.js"></script>
+    <script src="./components/angular-route/angular-route.js"></script>
+    <script src="./components/angular-toggle-switch/angular-toggle-switch.js"></script>
+    <script src="./components/jquery-ui-layout-bower/source/stable/jquery.layout.js"></script>
+    <script src="./components/jquery-ui-layout-bower/source/stable/jquery.layout.min.js"></script>
+    <script src="./components/angular-ui-ace/ui-ace.js"></script>
+    <script src="./components/nprogress/nprogress.js"></script>
+    <script src="./components/jbrowser/src/jquery.jbrowser.js"></script>
+    <script src="./components/jquery-ui/jquery-ui.js"></script>
+    <script src="./components/fancytree/dist/jquery.fancytree-all.min.js"></script>
+    <!--endbower-->
+    <script src="./components/jquery.terminal/js/jquery.terminal-min.js"></script>
+    <!--site:app:scripts-->
+    <script src="./scripts/site/app.js"></script>
+    <script src="./scripts/site/controllers/main.js"></script>
+    <script src="./scripts/site/controllers/about.js"></script>
+    <script src="./scripts/site/controllers/sample.js"></script>
+    <script src="./scripts/site/controllers/sample-new.js"></script>
+    <script src="./scripts/site/controllers/sample-edit.js"></script>
+    <script src="./scripts/site/directives/langsupport.js"></script>
+    <script src="./scripts/site/directives/panelslayout.js"></script>
+    <script src="./scripts/site/directives/aceeditor.js"></script>
+    <script src="./scripts/site/directives/videotutorial.js"></script>
+    <script src="./scripts/site/directives/terminal.js"></script>
+    <script src="./scripts/site/directives/browser.js"></script>
+    <script src="./scripts/site/directives/treeview.js"></script>
+    <!--site:app:scripts:end-->
+    <script src="script.js"></script>
 </body>
 </html>

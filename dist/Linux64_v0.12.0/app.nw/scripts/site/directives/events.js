@@ -1618,6 +1618,58 @@ for(var i=0; i<stdouts.length; i++) {
     t.markers.push(m1);
 }
 
+
+// Sample works
+var timeTotal = 97867+10;
+
+var t = window.t = new Timeline({length: timeTotal, frequency:10 });
+
+for(var i=0; i<milestones.length; i++) {
+    if(milestones[i]['session']){
+    console.log("Session marker!", milestones[i]['session'])
+    m1 = {
+        time: milestones[i]['time'],
+        session: milestones[i]['session'],
+        forward: function(){
+          console.log("1 do action Time: "+this.time, this, "ooozzzz");
+          var session = sessionFromJSON(this.session);
+          editor.setSession(session);
+        },
+        backward: function(){
+           console.log("2 do action Time: "+this.time, this, "aaasss");
+          var session = sessionFromJSON(this.session);
+          editor.setSession(session);
+        }
+    }
+    t.markers.push(m1);
+
+   } else if(milestones[i]['content']) {
+     console.log("Term marker!", milestones[i]['content'])
+     m1 = {
+        time: milestones[i]['time'],
+        content: milestones[i]['content'],
+        forward: function(){
+          console.log("do action Time: "+this.time);
+          term.write(this.content);
+          terminalText += this.content;
+        },
+        backward: function(){
+          console.log("Undo action Time: "+this.time);
+          c = this.content.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+          regexRollback = new RegExp(c+'$');
+          terminalText = terminalText.replace(regexRollback,'');
+          term.reset();
+          term.write(terminalText);
+        }
+    }
+
+    t.markers.push(m1);
+   } else {
+    console.log("Session / Content undef")
+   }
+}
+t.play();
+
 */
 
 //t.play();

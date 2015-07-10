@@ -8,6 +8,7 @@
  */
 
 $(document).ready(function(){
+  /*
     $('.ide-toggle-editor').on('click', function(e){
       e.preventDefault();
       e.stopPropagation()
@@ -15,12 +16,12 @@ $(document).ready(function(){
       if($('.ace_content:visible').size()===0){
           myLayout.sizePane("east", 4500);
       }
-      
+
       myLayout.toggle('east');
     });
 
     $('#terminal').draggable();
-    /*
+
     $('.ide-toggle-xterm').on('click', function(e){
       e.preventDefault();
       e.stopPropagation()
@@ -53,7 +54,7 @@ angular.module('anyandgoApp')
           term.on('title', function(title) {
               $('span.title-term').text(title);
           });
-          
+
 
           term.open($(element)[0]);
 

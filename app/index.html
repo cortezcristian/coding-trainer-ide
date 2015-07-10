@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="anyandgoApp">
 <head>
 <title>Coding-Trainer IDE</title>
 <link href="http://fonts.googleapis.com/css?family=Hammersmith+One" rel="stylesheet" type="text/css">
@@ -13,13 +13,14 @@ rel="stylesheet">
 <link href="./components/fontawesome/css/font-awesome.css" rel="stylesheet">
 <link href="./components/jquery-ui-layout-bower/source/stable/layout-default.css" rel=
 "stylesheet">
+<link rel="stylesheet" href="./components/jquery-ui/themes/smoothness/jquery-ui.css">
 <link href="./components/jquery.terminal/css/jquery.terminal.css" rel=
 "stylesheet">
 <link href="./components/fancytree/dist/skin-win8/ui.fancytree.css" rel=
 "stylesheet">
 <link href="./css/style.css" rel="stylesheet">
 </head>
-<body class="ui-layout-container">
+<body class="ui-layout-container" panelslayout>
     <div class="ui-layout-north">
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
@@ -32,16 +33,16 @@ rel="stylesheet">
                     "icon-bar"></span></button><a class=
                     "navbar-brand hammerfont" href="./"><i class=
                     "fa fa-cloud fa-3" style=
-                    "padding:0 3px;"></i>Any·and·go</a>
+                    "padding:0 3px;"></i>Coding-Trainer IDE</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id=
                 "bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
+                        <!--
                         <li>
                             <a href="./">Home</a>
-                        </li><!-- public:page:menu:start-->
-
+                        </li>
                         <li>
                             <a href="./contact">Contact</a>
                         </li>
@@ -52,7 +53,8 @@ rel="stylesheet">
 
                         <li>
                             <a href="./platform">platform</a>
-                        </li><!-- public:page:menu:end-->
+                        </li>
+                        -->
 
                         <li>
                             <div class="btn-toolbar" style="padding-top:7px">
@@ -156,26 +158,37 @@ rel="stylesheet">
                         </div>
                     </div>
                 </div>
-                <pre id="editor">
+                <pre id="editor" aceeditor>
 var holaMundo = function() {
        return "Hola Mundo";
 }
 holaMundo();
-</pre>
+                </pre>
             </div>
 
             <div class="ui-layout-south ide-term-container">
-                <div id="console"></div>
+                <div id="console" terminal></div>
             </div>
         </div>
     </div>
 
     <div class="ui-layout-south console">
-        <p>South</p>
-    </div>
+      <ul id="controls" class="ui-widget ui-helper-clearfi">
+        <li class="ui-state-default ui-corner-all">
+          <a href="#" class="ui-icon ui-icon-play"></a>
+        </li>
+        <li class="ui-state-default ui-corner-all">
+          <a href="#" class="ui-icon ui-icon-pause"></a>
+        </li>
+        <li class="ui-state-default ui-corner-all">
+          <a href="#" class="ui-icon ui-icon-stop"></a>
+        </li>
+        <li class="slide-con"><div id="slider" slider></div></li>
+      </ul>
+  </div>
 
     <div class="ui-layout-center browser-bg">
-        <div class="browser">
+        <div class="browser" browser>
             <div class="browser-nav-bar">
                 <div>
                     <div class="btn-group">
@@ -190,7 +203,8 @@ holaMundo();
                         <div class="input-group">
                             <input class="browser-url form-control" name=
                             "browser-url" type="text" value=
-                            "http://cortezcristian.com/curso-node-js/material/slides/episodio1.html"><a class="browser-go-btn input-group-addon fa fa-chevron-circle-right"
+                            "http://cortezcristian.com/curso-node-js/material/slides/episodio1.html" />
+                            <a class="browser-go-btn input-group-addon fa fa-chevron-circle-right"
                             style="font-style: italic"></a>
                         </div>
                     </div>
@@ -281,6 +295,10 @@ holaMundo();
     <script src="./scripts/site/directives/terminal.js"></script>
     <script src="./scripts/site/directives/browser.js"></script>
     <script src="./scripts/site/directives/treeview.js"></script>
+    <script src="./scripts/site/directives/timeline.js"></script>
+    <script src="./scripts/site/directives/xterm.js"></script>
+    <script src="./scripts/site/directives/events.js"></script>
+    <script src="./scripts/site/directives/slider.js"></script>
     <!--site:app:scripts:end-->
     <script src="script.js"></script>
 </body>

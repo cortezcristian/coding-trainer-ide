@@ -8,7 +8,7 @@
   "window": {
     "show": false,
     "position": "center",
-    "toolbar": true,
+    "toolbar": false,
     "frame": true,
     "width": 1200,
     "height": 700

@@ -9,6 +9,13 @@ var stdin = process.stdin,
 var end, start = new Date(), milestones = [];
 
 
+
+
+// on any data into stdin
+process.stdin.on( 'keypress', function( ch, key ){
+  console.log("pressed>>>>", key);
+});
+
 // Record
 var log = function(data, cb){
   fs.appendFile('./logs.txt', data, cb);
@@ -18,11 +25,20 @@ var logAction = function(data, cb){
   fs.appendFile('./actions.txt', data, cb);
 }
 
-var createMilestone = function(data, cb){
+var createMilestone = function(data, target, cb){
+  var session, content;
+  if(typeof data.session !== 'undefined') {
+    session = data.session;
+  } else {
+    content = data.replace(/\\/g, '\\\\').replace(/\"/g,'\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r')
+  }
+
   end = new Date();
   milestones.push({
+    target: '',
     time: (end - start),
-    content: data.replace(/\\/g, '\\\\').replace(/\"/g,'\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r')
+    session: session,
+    content: content
   });
   if(cb) { cb(); }
 }
@@ -41,21 +57,23 @@ var localterm = pty.spawn('bash', [], {
 localterm.on('data', function(data) {
   //log('c-out: '+data+'\r', function (err) {
   log(data, function (err) {
-    //createMilestone(data, function(){
+    createMilestone(data, 'terminal', function(){
         term.write(data);
-    //});
+    });
   });
 });
 
 $(document).ready(function(){
   term.on('key', function (key, ev) {
       var ch = (!ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey);
+      localterm.write( key );
+      /*
       if ( ch === '\u0003' ) {
           //console.log(milestones);
           // save envents
-          createTemplate(function(){
-              process.exit();
-          });
+          //createTemplate(function(){
+              //process.exit();
+          //});
         } else {
 
           if (false && typeof ch !== 'undefined' ) {
@@ -64,7 +82,72 @@ $(document).ready(function(){
             localterm.write( key );
           }
         }
+      */
   });
+
+  document.onkeydown = function (e) {
+
+
+    if($(document.activeElement).attr("class").match(/ace/)){
+      console.log("Editor in use", e.keyCode);
+      var sessionData = sessionToJSON(editor.session);
+      createMilestone({ event: e, session: sessionData }, 'editor', function(){
+        console.log('Session saved');
+      });
+    }
+    /*
+    if (e.ctrlKey === true && e.keyCode === 70) {
+        e.preventDefault();
+
+        console.log('Ctrl + f was hit...');
+    }
+    */
+  }
+
+  // ACE SESSION
+  // http://stackoverflow.com/questions/28257566/ace-editor-save-send-session-on-server-via-post
+  // http://stackoverflow.com/questions/20395991/is-it-possible-to-serialize-an-ace-session-object
+  var filterHistory = function(deltas){
+      return deltas.filter(function (d) {
+          return d.group != "fold";
+      });
+  }
+
+  sessionToJSON = function(session) {
+      return {
+          selection: session.selection.toJSON(),
+          value: session.getValue(),
+          history: {
+              undo: session.$undoManager.$undoStack.map(filterHistory),
+              redo: session.$undoManager.$redoStack.map(filterHistory)
+          },
+          scrollTop: session.getScrollTop(),
+          scrollLeft: session.getScrollLeft(),
+          options: session.getOptions()
+      }
+  }
+
+  sessionFromJSON = function(data) {
+      var session = ace.createEditSession(data.value);
+      session.$undoManager.$doc = session; // workaround for a bug in ace
+      session.setOptions(data.options);
+      session.$undoManager.$undoStack = data.history.undo;
+      session.$undoManager.$redoStack = data.history.redo;
+      session.selection.fromJSON(data.selection);
+      session.setScrollTop(data.scrollTop);
+      session.setScrollLeft(data.scrollLeft);
+      return session;
+  };
+
+  /* Usage
+  // Save it
+  var session = editor.session;
+  var sessionData = sessionToJSON(session);
+  // Restore it
+  var session = sessionFromJSON(sessionData);
+  editor.setSession(session);
+  */
+
 });
 
 // Show app

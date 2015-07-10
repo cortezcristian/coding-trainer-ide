@@ -1618,6 +1618,36 @@ for(var i=0; i<stdouts.length; i++) {
     t.markers.push(m1);
 }
 
+
+// Sample works
+var timeTotal = 97867+10;
+
+var t = window.t = new Timeline({length: timeTotal, frequency:10 });
+
+for(var i=0; i<milestones.length; i++) {
+    if(milestones[i]['session']){
+    console.log("Session marker!", milestones[i]['session'])
+    m1 = {
+        time: milestones[i]['time'],
+        session: milestones[i]['session'],
+        forward: function(){
+          console.log("1 do action Time: "+this.time, this, "ooozzzz");
+          var session = sessionFromJSON(this.session);
+          editor.setSession(session);
+        },
+        backward: function(){
+           console.log("2 do action Time: "+this.time, this, "aaasss");
+          var session = sessionFromJSON(this.session);
+          editor.setSession(session);
+        }
+    }
+    t.markers.push(m1);
+   } else {
+    console.log("Session undef")
+   }
+}
+t.play();
+
 */
 
 //t.play();

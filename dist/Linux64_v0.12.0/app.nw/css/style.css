@@ -6,10 +6,18 @@ body
 body nav * {
   -webkit-app-region: drag;
 }
-body nav button,
-body nav input,
-body nav a {
-  -webkit-app-region: no-drag;
+body button,
+body input,
+body li,
+body i,
+body a {
+  -webkit-app-region: no-drag !important;
+}
+
+.navbar-right a {
+  display: block;
+  height: 30px;
+  width: 30px;
 }
 
 body a

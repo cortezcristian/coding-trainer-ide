@@ -1,5 +1,9 @@
 var gui = require('nw.gui');
 
+process.on('uncaughtException', function(err) {
+  console.log(err);
+});
+
 
 gui.Window.get().show();
 

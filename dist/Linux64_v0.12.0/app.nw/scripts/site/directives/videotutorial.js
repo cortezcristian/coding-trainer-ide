@@ -8,7 +8,7 @@
 var player;
 
 function onPlayerStateChange(event) {
-  console.log(event);
+  //console.log(event);
   var newState = event.data;
   switch(newState){
       case 0:
@@ -67,21 +67,33 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
     height: '300',
     width: '400',
-    videoId: 'rUwdlEjo4ag',
+    videoId: 'UYL3I6HTv0M',
+    playerVars: {
+      controls: 0,
+      showinfo: 0 ,
+      modestbranding: 1,
+      wmode: "opaque",
+      allowNetworking: 'internal'
+    },
     events: {
       'onReady': function onPlayerReady(event) {
-        console.log(event);
+
+        console.log("ohhh",event);
+
         //Progress Bar
         NProgress.configure({ showSpinner: false });
         //NProgress.start();
         NProgress.set(0);
-        event.target.playVideo();
+
+        //event.target.playVideo();
+
+
       },
       'onStateChange': onPlayerStateChange
     }
   });
 
-  
+
   //keep Moving
   (function(){
       updatePlayerInfo(player);

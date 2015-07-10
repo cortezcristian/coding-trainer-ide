@@ -1,8 +1,5 @@
 var gui = require('nw.gui');
 
-process.on('uncaughtException', function(err) {
-  console.log(err);
-});
 
 
 gui.Window.get().show();
@@ -16,3 +13,20 @@ submenu.append(new gui.MenuItem({ label: 'box4' }));
 menu1.append(new gui.MenuItem({ icon: 'imgs/disk.png', label: 'File', submenu: submenu }));
 //menu1.createMacBuiltin("Coding-Trainer App");
 //gui.Window.get().menu = menu1;
+
+
+gui.App.setCrashDumpDir('./');
+
+
+window.on('error', error);
+process.on('uncaughtException',exception);
+
+function error() {
+  console.log('This is an error of windows');
+  return false;
+}
+
+function exception() {
+  console.log('This is an error process');
+  return false;
+}

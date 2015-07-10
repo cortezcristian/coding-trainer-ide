@@ -1595,6 +1595,7 @@ var terminalText = "";
 //Markers
 var m1, c = "", regexRollback;
 
+/*
 for(var i=0; i<stdouts.length; i++) {
     m1 = {
         time: stdouts[i]['time'],
@@ -1603,8 +1604,8 @@ for(var i=0; i<stdouts.length; i++) {
           console.log("do action Time: "+this.time);
           term.write(this.content);
           terminalText += this.content;
-        },    
-        backward: function(){ 
+        },
+        backward: function(){
           console.log("Undo action Time: "+this.time);
           c = this.content.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
           regexRollback = new RegExp(c+'$');
@@ -1616,5 +1617,7 @@ for(var i=0; i<stdouts.length; i++) {
 
     t.markers.push(m1);
 }
+
+*/
 
 //t.play();

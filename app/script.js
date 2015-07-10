@@ -8,6 +8,7 @@ var stdin = process.stdin,
     pty = require('pty.js');
 var end, start = new Date(), milestones = [];
 var recStatus = 'stopped';
+var Q = require('q');
 
 
 
@@ -287,3 +288,346 @@ for(var i=0; i<milestones.length; i++) {
 
 
 }
+
+/*
+// GIT
+var open = require("nodegit").Repository.open;
+var path = require('path');
+var async = require('async');
+var git     = require('nodegit');
+// Convert back from decimal to octal strings.
+function toOctal(mode) {
+  var fileMode = git.TreeEntry.FILEMODE;
+  switch (mode) {
+    case fileMode.NEW:        return '000000';
+    case fileMode.TREE:       return '040000';
+    case fileMode.BLOB:       return '100644';
+    case fileMode.EXECUTABLE: return '100755';
+    case fileMode.LINK:       return '120000';
+    case fileMode.COMMIT:     return '160000';
+    default: throw new Error('Unknown mode: ' + mode);
+  }
+}
+
+
+var getTree = function(cb) {
+ open(path.resolve(__dirname, './repos/express4crud'))
+        .then(function(repo) {
+      // Use a known commit sha from this repository.
+      var sha = "83ab2e5f7f8197d655497ea676b0017606095be3";
+
+      // Look up this known commit.
+      repo.getCommit(sha).then(function(commit) {
+        // Look up a specific file within that commit.
+        commit.getTree().then(function(tree) {
+            var entries = tree.entries();
+            //console.log(tree, entries, entries[0].path());
+
+            function entryType(ent) {
+              var mode = ent.filemode();
+              return ent.isTree() ? 'tree'
+                   : ent.isBlob() ? 'blob'
+                   : (mode === git.TreeEntry.FileMode.Commit) ? 'commit'
+                   : (mode === git.TreeEntry.FileMode.Link)   ? 'link'
+                   : (mode === git.TreeEntry.FileMode.New)    ? 'new'
+                   : cb(new Error('Unknown tree entry type, with mode: ' + mode));
+            }
+
+            function entryToJSON(ent, cb) {
+              ent.filemode = function(){
+                return git.Tree.entryFilemode(this);
+              }
+              //console.log("aaa", ent, ent.sha(), "<---");
+              var jent = { path : ent.path()
+                         , mode : toOctal(ent.filemode())
+                         , type : entryType(ent)
+                         , icon : (ent.isFile()) ? 'f': ((ent.isDirectory())?'d':'-')
+                         , sha  : ent.sha() };
+              if (!ent.isBlob()) {
+                cb(null, jent);
+              } else {
+                var odb = repo.odb(function(err, odb){
+                    // odb no parece tener read
+                    odb.read(jent.sha, function (err, obj) {
+                      if (err) { cb(err); }
+                      jent.size = obj.size();
+                      cb(null, jent);
+                    });
+                });
+                //cb(null, jent);
+              }
+            }
+
+
+            async.map(entries, entryToJSON, function(err, result){
+                console.log('>',err, result);
+                var tree = [];
+                var item;
+                result.forEach(function(v,i){
+                    console.log(v.icon, v.path, '<--');
+                    item = {title:v.path, key:v.path};
+                    if(v.icon === "d"){
+                        item.children = [];
+                        item.folder = true;
+                        item.lazy = true;
+                    }
+                    tree.push(item)
+                });
+
+                cb(tree);
+
+            });
+        });
+      });
+    });
+}
+
+var getSubFolder = function(foldername, cb){
+ //console.log(path.resolve(__dirname, 'repos/express4crud'));
+    open(path.resolve(__dirname, './repos/express4crud'))
+        .then(function(repo) {
+      // Use a known commit sha from this repository.
+      var sha = "83ab2e5f7f8197d655497ea676b0017606095be3";
+
+      // Look up this known commit.
+      repo.getCommit(sha).then(function(commit) {
+        // Look up a specific file within that commit.
+        console.log("dir>", foldername, req.body);
+        commit.getEntry(""+foldername).then(function(folder){
+            console.log("fofolder>>", folder);
+            folder.getTree().then(function(tree) {
+            var entries = tree.entries();
+            //console.log(tree, entries, entries[0].path());
+
+            function entryType(ent) {
+              var mode = ent.filemode();
+              return ent.isTree() ? 'tree'
+                   : ent.isBlob() ? 'blob'
+                   : (mode === git.TreeEntry.FileMode.Commit) ? 'commit'
+                   : (mode === git.TreeEntry.FileMode.Link)   ? 'link'
+                   : (mode === git.TreeEntry.FileMode.New)    ? 'new'
+                   : cb(new Error('Unknown tree entry type, with mode: ' + mode));
+            }
+
+            function entryToJSON(ent, cb) {
+              ent.filemode = function(){
+                return git.Tree.entryFilemode(this);
+              }
+              //console.log("aaa", ent, ent.sha(), "<---");
+              var jent = { path : ent.path()
+                         , mode : toOctal(ent.filemode())
+                         , type : entryType(ent)
+                         , icon : (ent.isFile()) ? 'f': ((ent.isDirectory())?'d':'-')
+                         , sha  : ent.sha() };
+              if (!ent.isBlob()) {
+                cb(null, jent);
+              } else {
+                var odb = repo.odb(function(err, odb){
+                    // odb no parece tener read
+                    odb.read(jent.sha, function (err, obj) {
+                      if (err) { cb(err); }
+                      jent.size = obj.size();
+                      cb(null, jent);
+                    });
+                });
+                //cb(null, jent);
+              }
+            }
+
+
+            async.map(entries, entryToJSON, function(err, result){
+                //console.log('>',err, result);
+                var tree = [];
+                var item;
+                result.forEach(function(v,i){
+                    console.log(v.icon, v.path, '<--');
+                    var path = v.path.split('/');
+                    var title = path[path.length-1];
+                    item = {title:title, key:title};
+                    if(v.icon === "d"){
+                        item.children = [];
+                        item.folder = true;
+                        item.lazy = true;
+                    }
+                    tree.push(item)
+                });
+                //return result;
+                cb(tree);
+            });
+        });
+      });
+      });
+    });
+}
+
+var getFile = function(filefullpath, cb){
+  open(path.resolve(__dirname, './repos/express4crud'))
+        .then(function(repo) {
+      // Use a known commit sha from this repository.
+      var sha = "83ab2e5f7f8197d655497ea676b0017606095be3";
+
+      // Look up this known commit.
+      repo.getCommit(sha).then(function(commit) {
+        // Look up a specific file within that commit.
+        commit.getEntry(filefullpath).then(function(entry) {
+          // Get the blob contents from the file.
+          entry.getBlob().then(function(blob) {
+            // Show the name, sha, and filesize in byes.
+            console.log(entry.filename(), entry.sha(), blob.rawsize());
+
+            // Show a spacer.
+            console.log(Array(72).join("=") + "\n\n");
+
+            // Show the entire file.
+            cb(String(blob));
+          });
+        });
+      });
+    });
+}
+
+*/
+// Stupid nodegit and nan, not supporting nw.js 0.12.0
+
+
+
+console.log(">>>>>>>>>>", process.env.PWD+"/*");
+
+var getTree = function(folder, cb){
+  if(typeof folder === 'function') {
+    cb = folder;
+    folder = process.env.PWD;
+  } else {
+    folder = process.env.PWD+'/'+folder;
+  }
+
+  console.log("-->", folder);
+
+  fs.readdir(folder, function (err, files) {
+    //console.log("-->", files);
+    var tree = [];
+    var item;
+    files.forEach(function(v,i){
+      console.log(v);
+      item = {title:v, key:v};
+      if(!fs.statSync(folder+'/'+v).isFile()){
+          item.children = [];
+          item.folder = true;
+          item.lazy = true;
+      }
+      tree.push(item);
+    });
+    cb(tree);
+  });
+}
+
+var getTreePromise = function(folder){
+  var deferred = jQuery.Deferred();
+  if(typeof folder === 'function') {
+    cb = folder;
+    folder = process.env.PWD;
+  } else {
+    folder = process.env.PWD+'/'+folder;
+  }
+
+  console.log("-->", folder);
+
+  fs.readdir(folder, function (err, files) {
+    //console.log("-->", files);
+    if(err){
+      deferred.reject(err);
+    }
+
+    var tree = [];
+    var item;
+    files.forEach(function(v,i){
+      console.log(v);
+      item = {title:v, key:v};
+      if(!fs.statSync(folder+'/'+v).isFile()){
+          item.children = [];
+          item.folder = true;
+          item.lazy = true;
+      }
+      tree.push(item);
+    });
+    console.log("ARBOL", tree);
+    deferred.resolve(tree);
+  });
+
+  return deferred.promise();
+}
+
+
+var getFile = function(filefullpath, cb){
+  console.log("FILE", filefullpath);
+  fs.readFile(process.env.PWD+'/'+filefullpath, 'utf8', function (err,data) {
+    if (err) {
+      return console.log(err);
+    }
+    console.log(data);
+    cb(data);
+  });
+}
+
+
+$(document).ready(function(){
+  getTree(function(data){
+    treeData = [
+      {
+        title: "Tutorial",
+        folder: true,
+        key: "hashid",
+        expanded: true,
+        children: data
+      }
+    ];
+    // http://wwwendt.de/tech/fancytree/demo/sample-configurator.html
+    $('.treeview-con').fancytree({
+        source: treeData,
+        minExpandLevel: 1,
+        activate: function(event, data){
+          // A node was activated: display its title:
+          var node = data.node;
+          var path = node.getKeyPath();
+          var fdir = path.replace(/^\//, '').split("/");
+          fdir.shift(); // remove hash
+          var fpath = fdir.join('/').replace(/^\//, '');
+          $("#active-file span").text(fpath);
+          getFile( fpath, function(data){
+            editor.setValue(data);
+            editor.gotoLine(1);
+          });
+        },
+        beforeSelect: function(event, data){
+          // A node is about to be selected: prevent this, for folder-nodes:
+          if( data.node.isFolder() ){
+            return false;
+          }
+        },
+        lazyLoad: function(event, data) {
+          // http://wwwendt.de/tech/fancytree/demo/#sample-load-errors.html
+          var node = data.node;
+          var path = node.getKeyPath();
+          var fdir = path.replace(/^\//, '').split("/");
+          fdir.shift(); // remove hash
+          var fpath = fdir.join('/').replace(/^\//, '');
+          console.log("ask>>>", fpath);
+          /*
+          data.result = $.ajax({
+            type: 'POST',
+            url: '/tree',
+            data: {
+              folder: fpath
+            },
+            dataType: 'json'
+          });
+          */
+          data.result = getTreePromise(fpath).then(function(d){
+            return d;
+          });
+
+        }
+    });
+    console.log(treeData);
+  });
+});

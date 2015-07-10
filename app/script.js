@@ -4,15 +4,16 @@ var fs = require('fs');
 var path = require('path');
 var stdin = process.stdin,
     //keypress = require('keypress'),
-    Handlebars = require('handlebars'),
+    //Handlebars = require('handlebars'),
     pty = require('pty.js');
 var end, start = new Date(), milestones = [];
+var recStatus = 'stopped';
 
 
 
 
 // on any data into stdin
-process.stdin.on( 'keypress', function( ch, key ){
+process.stdin.on('keypress', function( ch, key ){
   console.log("pressed>>>>", key);
 });
 
@@ -57,9 +58,13 @@ var localterm = pty.spawn('bash', [], {
 localterm.on('data', function(data) {
   //log('c-out: '+data+'\r', function (err) {
   log(data, function (err) {
+    if(recStatus==='recording'){
     createMilestone(data, 'terminal', function(){
         term.write(data);
     });
+    } else {
+        term.write(data);
+    }
   });
 });
 
@@ -87,13 +92,14 @@ $(document).ready(function(){
 
   document.onkeydown = function (e) {
 
-
-    if($(document.activeElement).attr("class").match(/ace/)){
+    if(recStatus==='recording'){
+    if($(document.activeElement).attr("class").match(/ace/)) {
       console.log("Editor in use", e.keyCode);
       var sessionData = sessionToJSON(editor.session);
       createMilestone({ event: e, session: sessionData }, 'editor', function(){
         console.log('Session saved');
       });
+    }
     }
     /*
     if (e.ctrlKey === true && e.keyCode === 70) {
@@ -206,4 +212,78 @@ $(document).ready(function(){
     $('.maximize-nw-app').show();
   });
 
+
+  $('.ide-start-recording').click(function(){
+    recStatus = 'recording';
+  });
+
+  $('.ide-stop-recording').click(function(){
+    recStatus = 'stopped';
+  });
+
+  $('.ide-play-recorded').click(function(){
+    loadMarkers();
+    recStatus = 'playing';
+    t.play();
+  });
+
+  $('.ide-pause-recorded').click(function(){
+    recStatus = 'paused';
+    t.pause();
+  });
+
 });
+
+function loadMarkers() {
+  //milestones = [];
+  var timeTotal = 97867+10;
+
+  t = window.t = new Timeline({length: timeTotal, frequency:10 });
+
+for(var i=0; i<milestones.length; i++) {
+    if(milestones[i]['session']){
+    console.log("Session marker!", milestones[i]['session'])
+    m1 = {
+        time: milestones[i]['time'],
+        session: milestones[i]['session'],
+        forward: function(){
+          console.log("1 do action Time: "+this.time, this, "ooozzzz");
+          var session = sessionFromJSON(this.session);
+          editor.setSession(session);
+        },
+        backward: function(){
+           console.log("2 do action Time: "+this.time, this, "aaasss");
+          var session = sessionFromJSON(this.session);
+          editor.setSession(session);
+        }
+    }
+    t.markers.push(m1);
+
+   } else if(milestones[i]['content']) {
+     console.log("Term marker!", milestones[i]['content'])
+     m1 = {
+        time: milestones[i]['time'],
+        content: milestones[i]['content'],
+        forward: function(){
+          console.log("do action Time: "+this.time);
+          term.write(this.content);
+          terminalText += this.content;
+        },
+        backward: function(){
+          console.log("Undo action Time: "+this.time);
+          c = this.content.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+          regexRollback = new RegExp(c+'$');
+          terminalText = terminalText.replace(regexRollback,'');
+          term.reset();
+          term.write(terminalText);
+        }
+    }
+
+    t.markers.push(m1);
+   } else {
+    console.log("Session / Content undef")
+   }
+}
+
+
+}

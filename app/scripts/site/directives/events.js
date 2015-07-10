@@ -1642,8 +1642,30 @@ for(var i=0; i<milestones.length; i++) {
         }
     }
     t.markers.push(m1);
+
+   } else if(milestones[i]['content']) {
+     console.log("Term marker!", milestones[i]['content'])
+     m1 = {
+        time: milestones[i]['time'],
+        content: milestones[i]['content'],
+        forward: function(){
+          console.log("do action Time: "+this.time);
+          term.write(this.content);
+          terminalText += this.content;
+        },
+        backward: function(){
+          console.log("Undo action Time: "+this.time);
+          c = this.content.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+          regexRollback = new RegExp(c+'$');
+          terminalText = terminalText.replace(regexRollback,'');
+          term.reset();
+          term.write(terminalText);
+        }
+    }
+
+    t.markers.push(m1);
    } else {
-    console.log("Session undef")
+    console.log("Session / Content undef")
    }
 }
 t.play();

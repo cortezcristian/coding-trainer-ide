@@ -1,5 +1,5 @@
 {
-  "name": "node-webkit menu demo",
+  "name": "coding-trainer-rec",
   "main": "index.html",
   "chromium-args": "--disable-web-security",
   "webkit": {
@@ -9,7 +9,7 @@
     "show": false,
     "position": "center",
     "toolbar": false,
-    "frame": true,
+    "frame": false,
     "width": 1200,
     "height": 700
   }

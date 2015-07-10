@@ -1,8 +1,8 @@
 var gui = require('nw.gui');
+var win = gui.Window.get();
 
 
-
-gui.Window.get().show();
+win.show();
 
 var menu1 = new gui.Menu({ type: 'menubar' });
 var submenu = new gui.Menu();
@@ -18,7 +18,7 @@ menu1.append(new gui.MenuItem({ icon: 'imgs/disk.png', label: 'File', submenu: s
 gui.App.setCrashDumpDir('./');
 
 
-window.on('error', error);
+win.on('error', error);
 process.on('uncaughtException',exception);
 
 function error() {
@@ -30,3 +30,25 @@ function exception() {
   console.log('This is an error process');
   return false;
 }
+
+$(document).ready(function(){
+  $('.close-nw-app').click(function(){
+    console.log("closing...")
+    gui.App.quit();
+  });
+
+  $('.maximize-nw-app').click(function(){
+    win.show();
+    win.maximize();
+    $('.maximize-nw-app').hide();
+    $('.restore-nw-app').show();
+  });
+
+  $('.restore-nw-app').click(function(){
+    win.show();
+    win.restore();
+    $('.restore-nw-app').hide();
+    $('.maximize-nw-app').show();
+  });
+
+});

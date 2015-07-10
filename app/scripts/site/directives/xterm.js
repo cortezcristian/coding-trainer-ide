@@ -45,10 +45,29 @@ angular.module('anyandgoApp')
               screenKeys: true
           });
 
+        /*
           term.on('data', function(data) {
               //socket.emit('data', data);
               console.log("typed data:", data);
-              //term.write(data);
+              term.write(data);
+          });
+        */
+
+          term.on('key', function (key, ev) {
+            var printable = (!ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey);
+
+            if (ev.keyCode == 13) {
+              //term.prompt();
+            } else if (ev.keyCode == 8) {
+              /*
+               * Do not delete the prompt
+               */
+              if (term.x > 2) {
+                term.write('\b \b');
+              }
+            } else if (printable) {
+              term.write(key);
+            }
           });
 
           term.on('title', function(title) {

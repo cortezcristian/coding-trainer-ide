@@ -6,7 +6,9 @@ body
 body nav * {
   -webkit-app-region: drag;
 }
-body nav button, body nav a {
+body nav button,
+body nav input,
+body nav a {
   -webkit-app-region: no-drag;
 }
 

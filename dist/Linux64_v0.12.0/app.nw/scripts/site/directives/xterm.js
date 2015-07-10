@@ -31,6 +31,7 @@ $(document).ready(function(){
     */
 });
 
+console.log("here");
 var term;
 
 angular.module('anyandgoApp')
@@ -51,7 +52,7 @@ angular.module('anyandgoApp')
               console.log("typed data:", data);
               term.write(data);
           });
-        */
+
 
           term.on('key', function (key, ev) {
             var printable = (!ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey);
@@ -59,9 +60,7 @@ angular.module('anyandgoApp')
             if (ev.keyCode == 13) {
               //term.prompt();
             } else if (ev.keyCode == 8) {
-              /*
-               * Do not delete the prompt
-               */
+               // Do not delete the prompt
               if (term.x > 2) {
                 term.write('\b \b');
               }
@@ -69,6 +68,7 @@ angular.module('anyandgoApp')
               term.write(key);
             }
           });
+*/
 
           term.on('title', function(title) {
               $('span.title-term').text(title);

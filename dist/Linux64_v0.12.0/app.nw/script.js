@@ -1,10 +1,73 @@
 var gui = require('nw.gui');
 var win = gui.Window.get();
+var fs = require('fs');
+var path = require('path');
 var stdin = process.stdin,
-    keypress = require('keypress'),
+    //keypress = require('keypress'),
     Handlebars = require('handlebars'),
     pty = require('pty.js');
+var end, start = new Date(), milestones = [];
 
+
+// Record
+var log = function(data, cb){
+  fs.appendFile('./logs.txt', data, cb);
+}
+
+var logAction = function(data, cb){
+  fs.appendFile('./actions.txt', data, cb);
+}
+
+var createMilestone = function(data, cb){
+  end = new Date();
+  milestones.push({
+    time: (end - start),
+    content: data.replace(/\\/g, '\\\\').replace(/\"/g,'\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r')
+  });
+  if(cb) { cb(); }
+}
+
+// Terminal
+var localterm = pty.spawn('bash', [], {
+  name: 'xterm-color',
+  cols: 90,
+  rows: 30,
+  stdio: [ 'pipe', 'pipe', 'pipe'],
+  cwd: process.env.HOME,
+  //cwd: process.cwd(),
+  env: process.env
+});
+
+localterm.on('data', function(data) {
+  //log('c-out: '+data+'\r', function (err) {
+  log(data, function (err) {
+    //createMilestone(data, function(){
+        term.write(data);
+    //});
+  });
+});
+
+$(document).ready(function(){
+  term.on('key', function (key, ev) {
+      var ch = (!ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey);
+      if ( ch === '\u0003' ) {
+          //console.log(milestones);
+          // save envents
+          createTemplate(function(){
+              process.exit();
+          });
+        } else {
+
+          if (false && typeof ch !== 'undefined' ) {
+            localterm.write( ch );
+          } else {
+            localterm.write( key );
+          }
+        }
+  });
+});
+
+// Show app
 win.show();
 
 
@@ -34,8 +97,8 @@ function error() {
   return false;
 }
 
-function exception() {
-  console.log('This is an error process');
+function exception(e) {
+  console.log('This is an error process', e);
   return false;
 }
 

@@ -58,6 +58,7 @@
 				'http://cortezcristian.com/':'http://cortezcristian.com/',
                 'http://cortezcristian.com/curso-node-js/material/slides/episodio1.html':'http://cortezcristian.com/curso-node-js/material/slides/episodio1.html',
 				'http://www.ruby-doc.org/core/classes/Regexp.html':'http://www.ruby-doc.org/core/classes/Regexp.html',
+				'http://cortezcristian.com/angular-talk/#/':'./material/angular-talk/index.html',
 				'http://www.zenspider.com/Languages/Ruby/QuickRef.html':'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
 			},
 			page404: './browser/error404.html',

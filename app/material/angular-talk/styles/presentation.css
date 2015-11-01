@@ -1,0 +1,8 @@
+body .reveal h1 { text-transform: none; }
+body .reveal h2 { text-transform: none; }
+body .reveal .hide { display: none; }
+body .reveal img {
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+}
